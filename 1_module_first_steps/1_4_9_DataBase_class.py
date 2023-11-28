@@ -75,7 +75,29 @@ class DataBase:
     FIELDS = ('id', 'name', 'old', 'salary')
 
     # здесь добавлять методы
+    def insert(self, data: list):
+        # print(data)
+        for elem in data:
+            # print(elem)
+            current_dict = {}
+            for field, value in zip(self.FIELDS, elem.split()):
+                current_dict[field] = value
+            self.lst_data.append(current_dict)
 
 
-db = DataBase()
-db.insert(lst_in)
+    def select(self, a: int, b: int):
+        lst = self.lst_data
+        # print(lst)
+        lst_len = len(lst)
+        data_selected = [lst[a:], lst[a:b+1]][b + 1 <= lst_len]
+        return data_selected
+
+
+if __name__ == '__main__':
+    # print(lst_in)
+    print()
+    db = DataBase()
+    db.insert(lst_in)
+    print(db.__dict__)
+    result = db.select(a=0, b=1)
+    print(*result, sep='\n')
