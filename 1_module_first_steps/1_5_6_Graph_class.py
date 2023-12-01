@@ -44,6 +44,7 @@ Sample Output:
 
 
 class Graph:
+
     def __init__(self, data: list, is_show: bool=True):
         self.is_show = is_show
         self.data = data.copy()
@@ -55,7 +56,6 @@ class Graph:
         """
         self.data = data.copy()
 
-
     def show_table(self):
         is_show = self.is_show
         if not is_show:
@@ -63,7 +63,6 @@ class Graph:
         else:
             data = self.data
             print(*data)
-
 
     def show_graph(self):
         is_show = self.is_show
@@ -74,7 +73,6 @@ class Graph:
             message = "Графическое отображение данных:"
             print(message, *data)
 
-
     def show_bar(self):
         is_show = self.is_show
         if not is_show:
@@ -83,7 +81,6 @@ class Graph:
             data = self.data
             message = "Столбчатая диаграмма:"
             print(message, *data)
-
 
     def set_show(self, fl_show: bool):
         setattr(self, 'is_show', fl_show)
