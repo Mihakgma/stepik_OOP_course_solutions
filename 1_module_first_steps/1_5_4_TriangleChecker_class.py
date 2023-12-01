@@ -27,10 +27,14 @@ Sample Output:
 
 3
 """
-from itertools import combinations as itertlz_combinations
-from random import choice as random_choice
+
 from random import randint as random_randint
 from pandas import Series as pd_Series
+
+
+def is_not_number(x):
+    out = [True, False][type(x) == int or type(x) == float]
+    return(out)
 
 
 class TriangleChecker:
@@ -50,22 +54,17 @@ class TriangleChecker:
         a = self.a
         b = self.b
         c = self.c
+
         abc = (a, b, c)
-        # case 1 (first)
-        try:
-            c - 50 + b - a
-        except TypeError:
+        abc_set = set(abc)
+        # case 1
+        if any([is_not_number(i) for i in abc]):
             return 1
         if any([i <= 0 for i in abc]):
             return 1
-        # case 2 (second)
-        ribs_combos = list(itertlz_combinations(abc, 2))
-        triangle_try = [(rib[0] + rib[1]) <= x for rib, x in zip(ribs_combos, [random_choice(abc)]*3)
-                        if rib[0] != rib[1] != x]
-        if any([triangle_try for i in range(tries_num)]):
+        if a + b <= c or b + c <= a or a + c <= b:
             return 2
-        else:
-            return 3
+        return 3
 
 
 def rnd_int(x_min=-100, x_max=1000):
@@ -74,8 +73,6 @@ def rnd_int(x_min=-100, x_max=1000):
 
 if __name__ == '__main__':
     # далее - для проверки
-    # print(list(itertlz_combinations([1,2,3],2)))
-    # print(*[TriangleChecker(*[rnd_int()]*3).is_triangle() for i in range(1000)])
     check_result = []
     iteration_number = 1000
     for i in range(iteration_number):
