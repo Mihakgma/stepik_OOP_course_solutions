@@ -55,8 +55,30 @@ class MotherBoard:
     def __init__(self, name: str, cpu: CPU, mem_slots: [Memory]):
         self.name = name
         self.cpu = cpu
-        self.mem_slots = mem_slots
+        self.mem_slots = mem_slots[:self.total_mem_slots]
+
+    def get_config(self):
+        name = self.name
+        cpu_name = self.cpu.name
+        cpu_fr = self.cpu.fr
+        total_mem_slots = self.total_mem_slots
+        mem_slots = self.mem_slots
+        memory_info = 'Память: ' + ('; '.join([f'{slot.name} - {slot.volume}'
+                                               for slot in mem_slots]))
+        config_info = [f'Материнская плата: {name}',
+                       f'Центральный процессор: {cpu_name}, {cpu_fr}',
+                       f'Слотов памяти: {total_mem_slots}',
+                       memory_info]
+        return config_info
 
 
 if __name__ == '__main__':
-    pass
+    cpu_1 = CPU(name='Intel', fr=2000)
+    mem_1 = Memory(name='Gigabyte', volume=4064)
+    mem_2 = Memory(name='SVO', volume=1028)
+    mb = MotherBoard(name='Intel',
+                     cpu=cpu_1,
+                     mem_slots=[mem_1, mem_2])
+    current_config = mb.get_config()
+    # Далее - для проверки!!!
+    print(current_config)
