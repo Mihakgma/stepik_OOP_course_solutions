@@ -64,6 +64,19 @@ class ListObject:
         self.next_obj = obj
 
 
+def create_list_obj(obj_data_lst):
+    objects_lst = [ListObject(data=i) for i in obj_data_lst]
+    head = objects_lst[0]
+    for obj_index in range(len(objects_lst)):
+        obj = objects_lst[obj_index]
+        try:
+            obj_nxt = objects_lst[obj_index + 1]
+            obj.link(obj=obj_nxt)
+        except IndexError:
+            print('End of a list!')
+    return objects_lst, head
+
+
 if __name__ == '__main__':
     lst_in = ['1. Первые шаги в ООП',
               '1.1 Как правильно проходить этот курс',
@@ -73,15 +86,6 @@ if __name__ == '__main__':
               '1.5 Инициализатор init и финализатор del',
               '1.6 Магический метод new. Пример паттерна Singleton',
               '1.7 Методы класса (classmethod) и статические методы (staticmethod)']
-    obj_lst = [ListObject(data=i) for i in lst_in]
-    head_obj = obj_lst[0]
-    for obj_index in range(len(obj_lst)):
-        obj = obj_lst[obj_index]
-        try:
-            obj_nxt = obj_lst[obj_index + 1]
-            obj.link(obj=obj_nxt)
-        except IndexError:
-            print('End of a list!')
-
+    obj_lst, head_obj = create_list_obj(obj_data_lst=lst_in)
     # print([i.__dict__ for i in obj_lst], sep='\n')
     print('\n'.join([str(i.__dict__) for i in obj_lst]))
