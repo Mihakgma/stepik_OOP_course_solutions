@@ -128,9 +128,13 @@ class GamePole:
                     if (h - 1) > -1:
                         mines_around_total += field_lst[h-1][l] == bomb_symb
                         mines_around_total += field_lst[h-1][l+1] == bomb_symb
-                    if  (l - 1) > -1 and (h - 1) > -1:
+                    # if  (l - 1) > -1 and (h - 1) > -1:
+                    #     mines_around_total += field_lst[h-1][l-1] == bomb_symb
+                except IndexError:
+                    pass
+                try:
+                    if (l - 1) > -1 and (h - 1) > -1:
                         mines_around_total += field_lst[h-1][l-1] == bomb_symb
-
                 except IndexError:
                     pass
                 try:
@@ -144,9 +148,12 @@ class GamePole:
                     pass
                 try:
                     mines_around_total += field_lst[h+1][l] == bomb_symb
+                    mines_around_total += field_lst[h+1][l+1] == bomb_symb
+                except IndexError:
+                    pass
+                try:
                     if (l - 1) > -1:
                         mines_around_total += field_lst[h+1][l-1] == bomb_symb
-                    mines_around_total += field_lst[h+1][l+1] == bomb_symb
                 except IndexError:
                     pass
                 cell_obj.set_around_mines(around_mines=mines_around_total)
@@ -158,7 +165,7 @@ class GamePole:
 
 if __name__ == '__main__':
     for i in range(3):
-        n, m = rnd_randint(3,7), rnd_randint(1,5)
+        n, m = rnd_randint(3, 10), rnd_randint(3, 7)
         print(f'n = <{n}>, m = <{m}>')
         gp_test = GamePole(N=n, M=m)
         gp_test.fill_field()
