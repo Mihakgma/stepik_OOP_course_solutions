@@ -60,29 +60,53 @@ from string import ascii_lowercase, digits
 
 # здесь объявляйте классы TextInput и PasswordInput
 class TextInput:
+    CHARS = "абвгдеёжзийклмнопрстуфхцчшщьыъэюя " + ascii_lowercase
+    CHARS_CORRECT = CHARS + CHARS.upper() + digits
+
+    def __new__(cls, *args, **kwargs):
+        if cls.check_name(args[0]):
+            cls.__instance = super().__new__(cls)
+            return cls.__instance
+
     def __init__(self, name: str, size: int=10):
         self.name = name
         self.size = size
 
     def get_html(self):
-        pass
+        html_row = f"<p class='login'>{self.name}: <input type='text' size={self.size} />"
+        return html_row
 
     @classmethod
     def check_name(cls, name):
-        pass
+        if (2 < len(name) < 51) and any([i in name for i in cls.CHARS_CORRECT]):
+            return True
+        else:
+            raise ValueError("некорректное поле name")
 
 
 class PasswordInput:
+    CHARS = "абвгдеёжзийклмнопрстуфхцчшщьыъэюя " + ascii_lowercase
+    CHARS_CORRECT = CHARS + CHARS.upper() + digits
+
+    def __new__(cls, *args, **kwargs):
+        if cls.check_name(args[0]):
+            cls.__instance = super().__new__(cls)
+            return cls.__instance
+
     def __init__(self, name: str, size: int=10):
         self.name = name
         self.size = size
 
     def get_html(self):
-        pass
+        html_row = f"<p class='password'>{self.name}: <input type='text' size={self.size} />"
+        return html_row
 
     @classmethod
     def check_name(cls, name):
-        pass
+        if (2 < len(name) < 51) and any([i in name for i in cls.CHARS_CORRECT]):
+            return True
+        else:
+            raise ValueError("некорректное поле name")
 
 
 class FormLogin:
@@ -98,3 +122,8 @@ if __name__ == '__main__':
     # эти строчки не менять
     login = FormLogin(TextInput("Логин"), PasswordInput("Пароль"))
     html = login.render_template()
+    print(html)
+    # Далее - для проверки!
+    login = FormLogin(TextInput(""), PasswordInput(""))
+    html = login.render_template()
+    print(html)
