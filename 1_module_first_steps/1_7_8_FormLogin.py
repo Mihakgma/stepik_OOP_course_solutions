@@ -65,12 +65,12 @@ class TextInput:
 
     def __new__(cls, *args, **kwargs):
         if cls.check_name(args[0]):
-            cls.__instance = super().__new__(cls)
-            return cls.__instance
+            return super().__new__(cls)
 
     def __init__(self, name: str, size: int=10):
         self.name = name
         self.size = size
+        # print(*[i for i in self.CHARS_CORRECT], sep='\n')
 
     def get_html(self):
         html_row = f"<p class='login'>{self.name}: <input type='text' size={self.size} />"
@@ -90,8 +90,7 @@ class PasswordInput:
 
     def __new__(cls, *args, **kwargs):
         if cls.check_name(args[0]):
-            cls.__instance = super().__new__(cls)
-            return cls.__instance
+            return super().__new__(cls)
 
     def __init__(self, name: str, size: int=10):
         self.name = name
