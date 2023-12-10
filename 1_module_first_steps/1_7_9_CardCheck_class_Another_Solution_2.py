@@ -32,35 +32,24 @@ from string import ascii_lowercase, digits
 class CardCheck:
     CHARS_FOR_NAME = ascii_lowercase.upper() + digits
 
-    def __init__(self):
-        pass
+    @staticmethod
+    def check_card_number(number):
+        """проверяет строку с номером карты и возвращает булево значение True,
+        если номер в верном формате и False - в противном случае. Формат номера,
+        следующий: XXXX-XXXX-XXXX-XXXX, где X - любая цифра (от 0 до 9)."""
+        figures = number.split('-')
+        return len(figures) == 4 and all([len(d) == 4 and d.isdigit() for d in figures])
 
     @classmethod
-    def check_name(cls, name: str):
-        try:
-            name_split = name.split(' ')
-            if len(name_split) > 2:
-                return False
-            name_refined = name_split[0] + name_split[1]
-            name_refined = ''.join(name_refined)
-            if sum([i in cls.CHARS_FOR_NAME for i in name_refined]) == len(name_refined):
-                return True
-            else:
-                return False
-        except BaseException as e:
-            # print(f'Error {e} occurred!')
-            return False
-
-    @staticmethod
-    def check_card_number(number: str, divider: str = '-'):
-        try:
-            if sum([1 for i in str(number).split(divider)
-                    if -1 < int(i) < 10000 and len(i) == 4]) == 4:
-                return True
-            else:
-                return False
-        except ValueError:
-            return False
+    def check_name(cls, name):
+        """проверяет строку name с именем пользователя карты.
+        Возвращает булево значение True, если имя записано верно
+        и False - в противном случае.
+        Формат имени: два слова (имя и фамилия) через пробел,
+        записанные заглавными латинскими символами и цифрами.
+        Например, SERGEI BALAKIREV."""
+        fi = name.split()
+        return all([c in cls.CHARS_FOR_NAME + ' ' for c in name]) and len(fi) == 2
 
 
 if __name__ == '__main__':

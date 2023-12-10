@@ -26,41 +26,18 @@ P.S. В программе только объявить класс. На экр
 """
 import timeit  # для замеров времени исполенния кода!!!
 from pandas import Series as pd_Series
-from string import ascii_lowercase, digits
+# from string import ascii_lowercase, digits
+import re
 
 
 class CardCheck:
-    CHARS_FOR_NAME = ascii_lowercase.upper() + digits
-
-    def __init__(self):
-        pass
-
-    @classmethod
-    def check_name(cls, name: str):
-        try:
-            name_split = name.split(' ')
-            if len(name_split) > 2:
-                return False
-            name_refined = name_split[0] + name_split[1]
-            name_refined = ''.join(name_refined)
-            if sum([i in cls.CHARS_FOR_NAME for i in name_refined]) == len(name_refined):
-                return True
-            else:
-                return False
-        except BaseException as e:
-            # print(f'Error {e} occurred!')
-            return False
+    @staticmethod
+    def check_card_number(number):
+        return bool(re.fullmatch(r"\d{4}(?:-\d{4}){3}", number))
 
     @staticmethod
-    def check_card_number(number: str, divider: str = '-'):
-        try:
-            if sum([1 for i in str(number).split(divider)
-                    if -1 < int(i) < 10000 and len(i) == 4]) == 4:
-                return True
-            else:
-                return False
-        except ValueError:
-            return False
+    def check_name(name):
+        return bool(re.fullmatch(r"[A-Z\d]+ [A-Z\d]+", name))
 
 
 if __name__ == '__main__':
