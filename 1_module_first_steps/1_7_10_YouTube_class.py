@@ -51,7 +51,7 @@ class YouTube:
 
     @classmethod
     def add_video(cls, video: Video):
-        cls.videos.append(video)
+        cls.videos.append(video.name)
 
     @classmethod
     def play(cls, video_indx: int):
