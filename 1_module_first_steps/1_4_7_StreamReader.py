@@ -17,7 +17,7 @@ class StreamReader:
 Которым, затем, можно воспользоваться следующим образом:
 
 sr = StreamReader()
-data, result = sr.readlines()
+buffer, result = sr.readlines()
 Необходимо перед классом StreamReader объявить еще один класс StreamData с методом:
 
 def create(self, fields, lst_values): ...
