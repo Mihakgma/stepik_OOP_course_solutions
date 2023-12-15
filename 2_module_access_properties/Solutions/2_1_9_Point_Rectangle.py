@@ -62,18 +62,54 @@ class Point:
 
 class Rectangle:
     def __init__(self, *args):
+        # инициализация с помощью двух объектов класса Point
         if isinstance(args[0], Point) and isinstance(args[1], Point):
             self.x1, self.y1 = args[0].get_coords()
             self.x2, self.y2 = args[1].get_coords()
             self.__sp, self.__ep = args
-        else:  # передаются координаты верхн левого и нижнего правого углов прям-ка в явном виде
-            pass
+        # передаются координаты верхн левого и нижнего правого углов прям-ка в явном виде
+        elif len(args) == 4:
+            self.x1, self.y1, self.x2, self.y2 = args
+            self.__sp, self.__ep = Point(self.x1, self.y1), Point(self.x2, self.y2)
+        else:
+            print('Ожидается на вход 2 объекта класса Point или 4 числа (целочисленных / вещественных)')
+            raise TypeError(f'Проверьте число (фактич. передано: <{len(args)}> шт.) и тип аргументов,'
+                             'необходимых для создания объекта класса Rectangle!')
+
+    def set_coords(self, sp, ep):
+        if isinstance(sp, Point) and isinstance(ep, Point):
+            self.x1, self.y1 = sp.get_coords()
+            self.x2, self.y2 = ep.get_coords()
+            self.__sp, self.__ep = sp, ep
+        else:
+            raise TypeError('Необходимо передать функции 2 объекта класса Point!')
+
+    def get_coords(self):
+        return self.__sp, self.__ep
+
+    def draw(self):
+        x1, y1 = self.__sp.get_coords()
+        x2, y2 = self.__ep.get_coords()
+        output = f"Прямоугольник с координатами: ({x1}, {y1}) ({x2}, {y2})"
+        print(output)
 
 
 if __name__ == '__main__':
+    rect = Rectangle(*(0, 0), *(20, 34))
+
+    # Далее - для проверки!
+    rect.draw()
+    rect.set_coords(Point(-7, -77), Point(1, 11))
+    rect.draw()
+    coords_temp = rect.get_coords()
+    print(coords_temp)
+
     pt_1 = Point(2342, 0.123123)
     pt_2 = Point(234, -0.23243)
     print(pt_1.__dict__)
     print(pt_1.get_coords())
     r1 = Rectangle(pt_1, pt_2)
     print(r1.__dict__)
+    r2 = Rectangle(1, 0.55, -33, -50)
+    print(r2.__dict__)
+    r3 = Rectangle(10, -33, -50)
