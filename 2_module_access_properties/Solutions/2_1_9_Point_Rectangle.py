@@ -65,6 +65,7 @@ class Rectangle:
         if isinstance(args[0], Point) and isinstance(args[1], Point):
             self.x1, self.y1 = args[0].get_coords()
             self.x2, self.y2 = args[1].get_coords()
+            self.__sp, self.__ep = args
         else:  # передаются координаты верхн левого и нижнего правого углов прям-ка в явном виде
             pass
 
