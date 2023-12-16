@@ -51,7 +51,6 @@ Sample Input:
 1.6 Магический метод new. Пример паттерна Singleton
 1.7 Методы класса (classmethod) и статические методы (staticmethod)
 Sample Output:
-
 """
 
 
@@ -87,5 +86,5 @@ if __name__ == '__main__':
               '1.6 Магический метод new. Пример паттерна Singleton',
               '1.7 Методы класса (classmethod) и статические методы (staticmethod)']
     obj_lst, head_obj = create_list_obj(obj_data_lst=lst_in)
-    # print([i.__dict__ for i in obj_lst], sep='\n')
+    # print([i.__dict__ for i in obj_lst_3], sep='\n')
     print('\n'.join([str(i.__dict__) for i in obj_lst]))
