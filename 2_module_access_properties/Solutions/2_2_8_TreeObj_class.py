@@ -156,7 +156,7 @@ if __name__ == '__main__':
     DecisionTree.add_obj(TreeObj(-1, "безнадежен"), v_12, False)
     # print(root.__dict__)
 
-    x = [0, 1, 0]
+    x = [1, 1, 0]
     res = DecisionTree.predict(root, x)  # будет программистом
     print(res)
     # "в классе DecisionTree должны быть методы add_obj и predict"
@@ -175,7 +175,7 @@ if __name__ == '__main__':
     res_1 = DecisionTree.predict(root, [1, 1, 0])
     # 'программист', "неверный вывод решающего дерева"
     print(res_1)
-    res_2 = DecisionTree.predict(root, [0, 1, 0])
+    res_2 = DecisionTree.predict(root, [1, 0, 1])
     # 'нет', "неверный вывод решающего дерева"
     print(res_2)
     res_3 = DecisionTree.predict(root, [0, 1, 1])
