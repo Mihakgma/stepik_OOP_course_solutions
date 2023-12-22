@@ -119,7 +119,7 @@ class DecisionTree:
             pass
         else:
             for i in x[1:]:
-                print(i)
+                # print(i)
                 prev = next
                 next = [next.right, next.left][i]
         try:
@@ -154,8 +154,30 @@ if __name__ == '__main__':
     DecisionTree.add_obj(TreeObj(-1, "будет кодером"), v_11, False)
     DecisionTree.add_obj(TreeObj(-1, "не все потеряно"), v_12)
     DecisionTree.add_obj(TreeObj(-1, "безнадежен"), v_12, False)
-    print(root.__dict__)
+    # print(root.__dict__)
 
     x = [0, 1, 0]
     res = DecisionTree.predict(root, x)  # будет программистом
     print(res)
+    # "в классе DecisionTree должны быть методы add_obj и predict"
+    print(hasattr(DecisionTree, 'add_obj') and hasattr(DecisionTree, 'predict'))
+
+    # "в классе TreeObj должны быть объекты-свойства left и right"
+    print(type(TreeObj.left) == property and type(TreeObj.right) == property)
+    root = DecisionTree.add_obj(TreeObj(0))
+    v_11 = DecisionTree.add_obj(TreeObj(1), root)
+    v_12 = DecisionTree.add_obj(TreeObj(2), root, False)
+    DecisionTree.add_obj(TreeObj(-1, "программист"), v_11)
+    DecisionTree.add_obj(TreeObj(-1, "кодер"), v_11, False)
+    DecisionTree.add_obj(TreeObj(-1, "посмотрим"), v_12)
+    DecisionTree.add_obj(TreeObj(-1, "нет"), v_12, False)
+
+    res_1 = DecisionTree.predict(root, [1, 1, 0])
+    # 'программист', "неверный вывод решающего дерева"
+    print(res_1)
+    res_2 = DecisionTree.predict(root, [0, 1, 0])
+    # 'нет', "неверный вывод решающего дерева"
+    print(res_2)
+    res_3 = DecisionTree.predict(root, [0, 1, 1])
+    # 'посмотрим', "неверный вывод решающего дерева"
+    print(res_3)
