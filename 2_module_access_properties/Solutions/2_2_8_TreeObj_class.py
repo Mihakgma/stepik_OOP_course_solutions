@@ -112,6 +112,7 @@ class DecisionTree:
         :param x: лист с путем по дереву со значениями 1 или 0
         :return: value - значение с данными (строка) из целевого объекта
         """
+        print("ПЕРЕПИСАТЬ МЕТОД ПРЕДИКТ!!!")
         if not len(x):
             return
         next = [root.right, root.left][x[0]]
@@ -121,7 +122,10 @@ class DecisionTree:
             for i in x[1:]:
                 # print(i)
                 prev = next
-                next = [next.right, next.left][i]
+                try:
+                    next = [next.right, next.left][i]
+                except AttributeError:
+                    pass
         try:
             return next.value
         except AttributeError:
@@ -181,3 +185,19 @@ if __name__ == '__main__':
     res_3 = DecisionTree.predict(root, [0, 1, 1])
     # 'посмотрим', "неверный вывод решающего дерева"
     print(res_3)
+    print("Новые Тесты!!!")
+    root = DecisionTree.add_obj(TreeObj(0))
+    v_11 = DecisionTree.add_obj(TreeObj(1), root)
+    v_12 = DecisionTree.add_obj(TreeObj(2), root, False)
+    v_111 = DecisionTree.add_obj(TreeObj(3), v_11)
+    v_112 = DecisionTree.add_obj(TreeObj(4), v_11, False)
+    DecisionTree.add_obj(TreeObj(-1, "1"), v_111)
+    DecisionTree.add_obj(TreeObj(-1, "2"), v_111, False)
+    DecisionTree.add_obj(TreeObj(-1, "5"), v_12)
+    DecisionTree.add_obj(TreeObj(-1, "6"), v_12, False)
+    DecisionTree.add_obj(TreeObj(-1, "3"), v_112)
+    DecisionTree.add_obj(TreeObj(-1, "4"), v_112, False)
+
+    x = [1, 0, 1, 1, 0]
+    res_7 = DecisionTree.predict(root, x)
+    print(res_7)
