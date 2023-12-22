@@ -75,11 +75,16 @@ P.S. В программе требуется объявить только кл
 
 
 class TreeObj:
-    def __init__(self, indx, value=None):
+    def __init__(self, indx=0, value: str=None):
+        """
+        Метод-иницализатор
+        :param indx: уровень в иерархии дерева от корня (0 - корень, 1- след уровен, и т.д.)
+        :param value: значение с данными (строка)
+        """
         self.indx = indx
         self.value = value
-        self.__left = None
-        self.__right = None
+        self.__left: TreeObj = None
+        self.__right: TreeObj = None
 
     def get_left(self):
         return self.__left
@@ -114,11 +119,29 @@ class DecisionTree:
             pass
         else:
             for i in x[1:]:
-                next = [next.right, next.left][x[0]]
-        return next.value
+                print(i)
+                prev = next
+                next = [next.right, next.left][i]
+        try:
+            return next.value
+        except AttributeError:
+            return prev.value
 
     @classmethod
     def add_obj(cls, obj: TreeObj, node: TreeObj=None, left: bool=True):
+        """
+        Обрабатывает текущий обьект obj, т.е. переприсваиваем ему значения атрибутов
+        :param obj: сам объект
+        :param node: объект дерева, из которого "растет" текущий объект
+        :param left: ответ верный (1)
+        :return: текущий обьект obj
+        """
+        if node is None:
+            return obj
+        if left:
+            node.left = obj
+        else:
+            node.right = obj
         return obj
 
 
@@ -131,7 +154,8 @@ if __name__ == '__main__':
     DecisionTree.add_obj(TreeObj(-1, "будет кодером"), v_11, False)
     DecisionTree.add_obj(TreeObj(-1, "не все потеряно"), v_12)
     DecisionTree.add_obj(TreeObj(-1, "безнадежен"), v_12, False)
+    print(root.__dict__)
 
-    x = [1, 1, 0]
+    x = [0, 1, 0]
     res = DecisionTree.predict(root, x)  # будет программистом
     print(res)
