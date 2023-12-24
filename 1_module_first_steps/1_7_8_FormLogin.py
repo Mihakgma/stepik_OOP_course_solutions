@@ -28,12 +28,12 @@ size - размер поля ввода (целое число, по умолч�
 get_html(self) - возвращает сформированную HTML-строку в формате (1-я строка для класса TextInput ;
 2-я - для класса PasswordInput):
 
-<p class='login'><имя поля>: <input type='text' size=<размер поля> />
-<p class='password'><имя поля>: <input type='text' size=<размер поля> />
+<p_1 class='login'><имя поля>: <input type='text' size=<размер поля> />
+<p_1 class='password'><имя поля>: <input type='text' size=<размер поля> />
 
 Например, для поля login:
 
-<p class='login'>Логин: <input type='text' size=10 />
+<p_1 class='login'>Логин: <input type='text' size=10 />
 
 Также классы TextInput и PasswordInput должны иметь метод класса (@classmethod):
 
@@ -73,7 +73,7 @@ class TextInput:
         # print(*[i for i in self.CHARS_CORRECT], sep='\n')
 
     def get_html(self):
-        html_row = f"<p class='login'>{self.name}: <input type='text' size={self.size} />"
+        html_row = f"<p_1 class='login'>{self.name}: <input type='text' size={self.size} />"
         return html_row
 
     @classmethod
@@ -97,7 +97,7 @@ class PasswordInput:
         self.size = size
 
     def get_html(self):
-        html_row = f"<p class='password'>{self.name}: <input type='text' size={self.size} />"
+        html_row = f"<p_1 class='password'>{self.name}: <input type='text' size={self.size} />"
         return html_row
 
     @classmethod
