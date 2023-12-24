@@ -112,24 +112,15 @@ class DecisionTree:
         :param x: лист с путем по дереву со значениями 1 или 0
         :return: value - значение с данными (строка) из целевого объекта
         """
-        print("ПЕРЕПИСАТЬ МЕТОД ПРЕДИКТ!!!")
-        if not len(x):
-            return
-        next = [root.right, root.left][x[0]]
-        if len(x) == 1:
-            pass
-        else:
-            for i in x[1:]:
-                # print(i)
-                prev = next
-                try:
-                    next = [next.right, next.left][i]
-                except AttributeError:
-                    pass
-        try:
-            return next.value
-        except AttributeError:
-            return prev.value
+        obj, prev = root, root
+        i = -1
+        while obj.indx > 0:
+            print(obj.indx)
+            prev = obj
+            i += 1
+            obj = [obj.right, obj.left][x[i]]
+        return prev.value
+
 
     @classmethod
     def add_obj(cls, obj: TreeObj, node: TreeObj=None, left: bool=True):
@@ -152,12 +143,18 @@ class DecisionTree:
 # Далее - для проверки!
 if __name__ == '__main__':
     root = DecisionTree.add_obj(TreeObj(0))
+    print(root.__dict__)
     v_11 = DecisionTree.add_obj(TreeObj(1), root)
     v_12 = DecisionTree.add_obj(TreeObj(2), root, False)
+    print(root.__dict__)
+    print(v_11.__dict__)
+    print(v_12.__dict__)
     DecisionTree.add_obj(TreeObj(-1, "будет программистом"), v_11)
     DecisionTree.add_obj(TreeObj(-1, "будет кодером"), v_11, False)
     DecisionTree.add_obj(TreeObj(-1, "не все потеряно"), v_12)
     DecisionTree.add_obj(TreeObj(-1, "безнадежен"), v_12, False)
+    print(v_11.__dict__)
+    print(v_12.__dict__)
     # print(root.__dict__)
 
     x = [1, 1, 0]
