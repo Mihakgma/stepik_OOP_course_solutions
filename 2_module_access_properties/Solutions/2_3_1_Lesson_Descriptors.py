@@ -33,9 +33,55 @@ class Point3D:
         self.z = z
 
 
+class RealValue:
+    def __set_name__(self, owner, name):
+        self.name = "_" + name
+
+    def __get__(self, instance, owner):
+        return instance.__dict__[self.name]
+
+
+class Point:
+    x = RealValue()
+    y = RealValue()
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
+class StringField:
+    def __set_name__(self, owner, name):
+        self.name = "_" + name
+
+    def __get__(self, instance, owner):
+        return instance.__dict__[self.name]
+
+    def __set__(self, instance, value):
+        instance.__dict__[self.name] = value
+
+
+class DataBase:
+    x = StringField()
+    y = StringField()
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
 if __name__ == '__main__':
     p = Point3D(1, 2, 3)
     p.z = 777
     print(p.__dict__)
-    p_1 = Point3D(11, 22, '')
-    print(p_1.__dict__)
+    # p_1 = Point3D(11, 22, '')
+    # print(p_1.__dict__)
+
+    pt = Point(1.5, 2.3)
+    pt.__dict__['x'] = 10.0
+    print(pt.x)
+
+    db = DataBase('hi', 'low')
+    db.__dict__['x'] = 'top'
+    print(db.x)
+    print(*[(k, v) for (k, v) in db.__dict__.items()], sep='\n')
