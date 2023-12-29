@@ -43,13 +43,31 @@ P.S. В программе требуется объявить классы с �
 
 
 class PriceValue:
-    pass
+    min_value = 0
+    max_value = 10000
+
+    @classmethod
+    def is_correct_price(cls, price):
+        return type(price) in (float, int) and cls.min_value <= price <= cls.max_value
+
+    def __set_name__(self, owner, name):
+        self.name = "_" + name
+
+    def __get__(self, instance, owner):
+        return instance.__dict__[self.name]
+
+    def __set__(self, instance, price):
+        if self.is_correct_price(price):
+            instance.__dict__[self.name] = price
 
 
 class StringValue:
+    min_length = 2
+    max_length = 50
 
-    def __init__(self, validator):
-        self.validator = validator
+    @classmethod
+    def validate(cls, string):
+        return type(string) is str and cls.min_length <= len(string) <= cls.max_length
 
     def __set_name__(self, owner, name):
         self.name = "_" + name
@@ -58,12 +76,17 @@ class StringValue:
         return instance.__dict__[self.name]
 
     def __set__(self, instance, value):
-        if self.validator.validate(value):
+        if self.validate(value):
             instance.__dict__[self.name] = value
 
 
 class Product:
-    pass
+    name = StringValue()
+    price = PriceValue()
+    
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
 
 
 class SuperShop:
@@ -71,10 +94,23 @@ class SuperShop:
         self.name = name
         self.goods = []
 
+    def add_product(self, product):
+        self.goods.append(product)
+
+    def remove_product(self, product):
+        self.goods.remove(product)
+
 
 if __name__ == '__main__':
     shop = SuperShop("У Балакирева")
     shop.add_product(Product("Курс по Python", 0))
-    shop.add_product(Product("Курс по Python ООП", 2000))
+    prod_2 = Product("Курс по Python ООП", 2000)
+    shop.add_product(prod_2)
+    prod_3 = Product("Курс по Картам Таро", 9999)
+    shop.add_product(prod_3)
+    for p in shop.goods:
+        print(f"{p.name}: {p.price}")
+    shop.remove_product(prod_2)
+    print(f'\nПосле удаления товара <{prod_2.name}>:')
     for p in shop.goods:
         print(f"{p.name}: {p.price}")
