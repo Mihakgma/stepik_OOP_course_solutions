@@ -1,0 +1,139 @@
+"""
+Видео-разбор подвига (решение смотреть только после своей попытки): https://youtu.be/45q8BT03c_U
+
+Подвиг 10 (на повторение). Необходимо написать программу для представления и
+управления расписанием телевизионного вещания. Для этого нужно объявить класс TVProgram,
+объекты которого создаются командой:
+
+pr = TVProgram(название канала)
+где название канала - это строка с названием телеканала.
+
+В каждом объекте класса TVProgram должен формироваться локальный атрибут:
+
+items - список из телепередач (изначально список пуст).
+
+В самом классе TVProgram должны быть реализованы следующие методы:
+
+add_telecast(self, tl) - добавление новой телепередачи в список items;
+remove_telecast(self, indx) - удаление телепередачи по ее порядковому номеру (атрибуту __id, см. далее).
+
+Каждая телепередача должна описываться классом Telecast, объекты которого создаются командой:
+
+tl = Telecast(порядковый номер, название, длительность)
+где порядковый номер - номер телепередачи в сетке вещания (от 1 и далее); название - наименование телепередачи;
+длительность - время телепередачи (в секундах - целое число).
+
+Соответственно, в каждом объекте класса Telecast должны формироваться локальные приватные атрибуты:
+
+__id - порядковый номер (целое число);
+__name - наименование телепередачи (строка);
+__duration - длительность телепередачи в секундах (целое число).
+
+Для работы с этими приватными атрибутами в классе Telecast должны быть объявлены соответствующие
+объекты-свойства (property):
+
+uid - для записи и считывания из локального атрибута __id;
+name - для записи и считывания из локального атрибута __name;
+duration - для записи и считывания из локального атрибута __duration.
+
+Пример использования классов (эти строчки в программе писать не нужно):
+
+pr = TVProgram("Первый канал")
+pr.add_telecast(Telecast(1, "Доброе утро", 10000))
+pr.add_telecast(Telecast(2, "Новости", 2000))
+pr.add_telecast(Telecast(3, "Интервью с Балакиревым", 20))
+for t in pr.items:
+    print(f"{t.name}: {t.duration}")
+P.S. В программе требуется объявить классы с описанным функционалом. На экран в программе выводить ничего не нужно.
+"""
+
+
+class NaturalDigit:
+
+    def __init__(self, min_value=1):
+        self.min_value = min_value
+
+    def is_correct_value(self, digit):
+        return type(digit) is int and self.min_value <= digit
+
+    def __set_name__(self, owner, name):
+        self.name = "__" + name
+
+    def __get__(self, instance, owner):
+        return instance.__dict__[self.name]
+
+    def __set__(self, instance, digit):
+        if self.is_correct_value(digit):
+            instance.__dict__[self.name] = digit
+        else:
+            instance.__dict__[self.name] = self.min_value
+
+
+class StringValue:
+
+    @classmethod
+    def validate(cls, string):
+        return type(string) is str
+
+    def __set_name__(self, owner, name):
+        self.name = "__" + name
+
+    def __get__(self, instance, owner):
+        return instance.__dict__[self.name]
+
+    def __set__(self, instance, value):
+        if self.validate(value):
+            instance.__dict__[self.name] = value
+
+
+class Telecast:
+    name = StringValue()
+    duration = NaturalDigit(min_value=0)
+
+    def __init__(self, id, name, duration):
+        self.__id = id
+        self.name = name
+        self.duration = duration
+
+    def get_id(self):
+        return self.__id
+
+    def set_id(self, id):
+        if NaturalDigit().is_correct_value(id):
+            self.__id = id
+
+    uid = property(get_id, set_id)
+
+
+class TVProgram:
+    def __init__(self, name):
+        self.name = name
+        self.items = []
+
+    def add_telecast(self, tl: Telecast):
+        self.items.append(tl)
+
+    def remove_telecast(self, indx: int):
+        """
+        удаление телепередачи по ее порядковому номеру
+        :param indx: атрибут __id экземпляра класса Telecast
+        :return:
+        """
+        [self.items.remove(obj) for obj in self.items if obj.uid == indx]
+
+
+if __name__ == '__main__':
+    pr = TVProgram("Первый канал")
+    pr.add_telecast(Telecast(1, "Доброе утро", 10000))
+    pr.add_telecast(Telecast(2, "Новости", 2000))
+    pr.add_telecast(Telecast(3, "Интервью с Балакиревым", 20))
+    for t in pr.items:
+        print(f"{t.name}: {t.duration}")
+    print('Код для проверки работы всех свойств')
+    tc_5 = Telecast(10, "Доброе доброе утро :-D", -10)
+    print(*[(k, v) for (k, v) in tc_5.__dict__.items()], sep='\n')
+    pr.add_telecast(tc_5)
+    print(*[(tc.uid, tc.name) for tc in pr.items], sep='\n')
+    print('Удаляем один из каналов из программы')
+    pr.remove_telecast(2)
+    print(*[(tc.uid, tc.name) for tc in pr.items], sep='\n')
