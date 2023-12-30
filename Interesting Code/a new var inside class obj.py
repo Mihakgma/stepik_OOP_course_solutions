@@ -4,9 +4,10 @@
 метода/ функции сборщиком мусора???
 """
 
+
 class SomeClass:
-    def do_something(self, *args) -> object:
-        pass
+    def do_something(self, *args):
+        return
 
 
 if __name__ == '__main__':
