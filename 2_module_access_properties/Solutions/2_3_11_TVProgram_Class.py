@@ -56,12 +56,6 @@ class NaturalDigit:
     def is_correct_value(self, digit):
         return type(digit) is int and self.min_value <= digit
 
-    def __set_name__(self, owner, name):
-        self.name = "__" + name
-
-    def __get__(self, instance, owner):
-        return instance.__dict__[self.name]
-
     def __set__(self, instance, digit):
         if self.is_correct_value(digit):
             instance.__dict__[self.name] = digit
@@ -75,25 +69,16 @@ class StringValue:
     def validate(cls, string):
         return type(string) is str
 
-    def __set_name__(self, owner, name):
-        self.name = "__" + name
-
-    def __get__(self, instance, owner):
-        return instance.__dict__[self.name]
-
     def __set__(self, instance, value):
         if self.validate(value):
             instance.__dict__[self.name] = value
 
 
 class Telecast:
-    name = StringValue()
-    duration = NaturalDigit(min_value=0)
-
     def __init__(self, id, name, duration):
         self.__id = id
-        self.name = name
-        self.duration = duration
+        self.__name = name
+        self.__duration = duration
 
     def get_id(self):
         return self.__id
@@ -103,6 +88,24 @@ class Telecast:
             self.__id = id
 
     uid = property(get_id, set_id)
+
+    def get_name(self):
+        return self.__name
+
+    def set_name(self, name):
+        if StringValue.validate(name):
+            self.__name = name
+
+    name = property(get_name, set_name)
+
+    def get_duration(self):
+        return self.__duration
+
+    def set_duration(self, duration):
+        if NaturalDigit(min_value=0).is_correct_value(id):
+            self.__duration = duration
+
+    duration = property(get_duration, set_duration)
 
 
 class TVProgram:
