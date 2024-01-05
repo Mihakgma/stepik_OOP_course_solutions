@@ -61,20 +61,23 @@ my_water.add_filter(3, Calcium(time.time())) # повторное добавле
 my_water.add_filter(2, Calcium(time.time())) # добавление в "чужой" слот также невозможно
 P.S. На экран ничего выводить не нужно.
 """
+import time
 
 
 class Filter:
-    _filter_installed = False
-
     def __init__(self, date):
         self.date = date
+        self.filter_installed = True
 
     def __setattr__(self, key, value):
-        if self._filter_installed:
-            return
-        elif isinstance(value, float) and value >= 0:
-            self._filter_installed = True
-            super().__setattr__(key, value)
+        if key == "filter_installed":
+            object.__setattr__(self, key, value)
+        elif "filter_installed" not in self.__dict__:
+            if key == "date" and isinstance(value, float) and value >= 0:
+                object.__setattr__(self, key, value)
+        else:
+            pass
+            # print(f"Невозможно переприсвоить значение <{value}> для атрибута <{key}>")
 
 
 class Mechanical(Filter):
@@ -109,7 +112,8 @@ class GeyserClassic:
         filters = cls.filters_codes
         if not filter:
             return slot_num in filters
-        if slot_num in filters and [True for (k, v) in filters.items() if v == filter]:
+        if slot_num in filters and [True for (k, v) in filters.items()
+                                    if k == slot_num and v == type(filter)]:
             return True
 
     def add_filter(self, slot_num, filter):
@@ -132,7 +136,7 @@ class GeyserClassic:
 
     def get_filters(self):
         installed_filters = self.filters_installed
-        return (v for (k, v) in installed_filters.items())
+        return tuple(v for (k, v) in installed_filters.items())
 
     def water_on(self):
         """
@@ -142,8 +146,61 @@ class GeyserClassic:
         (значение (time.time() - date) должно быть в пределах [0; MAX_DATE_FILTER])
         :return: True | False
         """
-        pass
+        return all(self.filters_installed.values()) and \
+               all([0 <= time.time() - x.date <= self.MAX_DATE_FILTER
+                    for x in self.filters_installed.values()])
+
+
+# Далее - для самопроверки:
 
 
 if __name__ == '__main__':
-    pass
+    my_water = GeyserClassic()
+    my_water.add_filter(1, Mechanical(time.time()))
+    my_water.add_filter(2, Aragon(time.time()))
+    print(*[(k, v) for (k, v) in my_water.__dict__.items()], sep='\n')
+    w = my_water.water_on()  # False
+    print(w)
+    my_water.add_filter(3, Calcium(time.time()))
+    w_2 = my_water.water_on()  # True
+    print(w_2)
+    f1, f2, f3 = my_water.get_filters()  # f1, f2, f3 - ссылки на соответствующие объекты классов фильтров
+    print("Установленные фильтры:")
+    print(f1, f2, f3, sep='\n')
+    time.sleep(1.5)
+    print("\nПробуем переприсвоить значение даты для одного из фильтров:")
+    date_before = f1.date
+    print(*[(k, v) for (k, v) in f1.__dict__.items()], sep='\n')
+    print(f"Значение даты в  объекте  <{f1}>  ДО ПОПЫТКИ изменения даты = <{date_before}>")
+    f1.date = time.time()
+    date_after = f1.date
+    print(f"Значение даты в объекте <{f1}> ПОСЛЕ ПОПЫТКИ изменения даты = <{date_after}>")
+    print(*[(k, v) for (k, v) in f1.__dict__.items()], sep='\n')
+    print(f"Даты - равны? <{date_before == date_after}>")
+    my_water.add_filter(3, Calcium(time.time()))  # повторное добавление в занятый слот невозможно
+    my_water.add_filter(2, Calcium(time.time()))  # добавление в "чужой" слот также невозможно
+    print(*[(k, v) for (k, v) in my_water.__dict__.items()], sep='\n')
+    filters = my_water.get_filters()
+    print(filters)
+
+    print("\nЕще один фильтр:")
+    geizer_1 = GeyserClassic()
+    geizer_1.add_filter(1, Mechanical(time.time()))
+    geizer_1.add_filter(2, Mechanical(time.time()))
+    geizer_1.add_filter(3, Calcium(time.time()))
+    print(*[(k, v) for (k, v) in geizer_1.__dict__.items()], sep='\n')
+    print(geizer_1.water_on())
+    slot_num_delete = 1
+    print(f"Удаляем фильтр в <{slot_num_delete}>-ом слоте")
+    geizer_1.remove_filter(slot_num=slot_num_delete)
+    print(*[(k, v) for (k, v) in geizer_1.__dict__.items()], sep='\n')
+
+    print("Пробуем создать фильтр без даты:")
+    f_1_test = Mechanical(-0.1)
+    print(*[(k, v) for (k, v) in f_1_test.__dict__.items()], sep='\n')
+    f_1_test.date = time.time()
+    print(f_1_test.date)
+    print(f_1_test.__getattr__("date"))
+    print(f_1_test.__getattr__("aefsdgg"))
+    print(f_1_test.__getattr__("filter_installed"))
+    print(*[(k, v) for (k, v) in f_1_test.__dict__.items()], sep='\n')
