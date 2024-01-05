@@ -37,38 +37,26 @@ from math import inf as math_inf
 
 
 class Circle:
-    __ATTRIBUTE_DETAILS = {
-        "x": [[int, float], -math_inf],
-        "y": [[int, float], -math_inf],
-        "radius": [[int, float], 0]
+    attrs = {
+        "x": [int, float],
+        "y": [int, float],
+        "radius": [int, float]
     }
 
     def __init__(self, x, y, radius):
-        # self.__setattr__(key='__x', value=x)
         self.x = x
         self.y = y
         self.radius = radius
 
     def __getattr__(self, item):
-        # if item in Circle.__dict__:
-        #     return object.__getattribute__(self, item)
-        # else:
         return False
 
     def __setattr__(self, key, value):
-        print(f"Попытка присвоить атрибуту <{key}> значения <{value}>")
-        if [True for (k, v) in self.__ATTRIBUTE_DETAILS.items()
-        if key == k and type(value) not in v[0]]:
+        if key in self.attrs and type(value) not in self.attrs[key]:
             raise TypeError("Неверный тип присваиваемых данных.")
-        check_ok = [True for (k, v) in self.__ATTRIBUTE_DETAILS.items()
-                    if key == k and type(value) in v[0] and value > v[1]]
-        if check_ok:
-            super().__setattr__(key, value)
-        else:
-            # игнорируем неверное численное значение - ничего не происходит
-            print(f"Игнорим <{value}> для <{key}>")
-            # object.__setattr__(self, key, 0)
+        elif key == "radius" and value <= 0:
             return
+        super().__setattr__(key, value)
 
     def get_x(self):
         return self.__x
@@ -98,7 +86,7 @@ class Circle:
 # Далее - для проверки!
 if __name__ == '__main__':
     circle = Circle(10.5, 7, 22)
-    circle.radius = -10  # прежнее значение не должно меняться, т.к. отрицательный радиус недопустим
+    # circle.radius = -10  # прежнее значение не должно меняться, т.к. отрицательный радиус недопустим
     print("\nПроверка по присвоению атрибутам корректных / некорректных значений:")
     # print(*[(k, v) for (k, v) in circle.__dict__.items()], sep='\n')
     x, y, r = circle.x, circle.y, circle.radius
