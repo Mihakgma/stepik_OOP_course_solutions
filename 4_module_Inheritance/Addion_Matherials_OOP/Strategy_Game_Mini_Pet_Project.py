@@ -85,8 +85,8 @@ if __name__ == '__main__':
     units_container = prepare_container(teams)
     # print(units_container)
 
-    iterations = 1000000
-    hero_uplevel_border = 111  # данное количество солдат увеличивает уровень героев на 1 единицу
+    iterations = 1000
+    hero_uplevel_border = 11  # данное количество солдат увеличивает уровень героев на 1 единицу
     # print(33%hero_uplevel_border)
     unique_team_ids = set(teams)
     heroes_lst = [v[0] for (k,v) in units_container.items()]
