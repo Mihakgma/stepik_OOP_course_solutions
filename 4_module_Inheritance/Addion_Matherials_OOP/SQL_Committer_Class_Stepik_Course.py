@@ -1,4 +1,30 @@
 """
+ДЛЯ степа:
+
+Решение для SQLite3 с подзапросом:
+SELECT
+	name,
+	SUM(per_diem * (JULIANDAY(date_last) - JULIANDAY(date_first) + 1)) AS Сумма
+FROM trip
+WHERE name IN (
+    SELECT name
+    FROM trip
+    GROUP BY name
+    HAVING COUNT(name) > 3
+)
+GROUP BY name
+ORDER BY Сумма DESC
+
+Без подзапроса:
+
+SELECT
+	name,
+	SUM(per_diem * (JULIANDAY(date_last) - JULIANDAY(date_first) + 1)) AS Сумма
+FROM trip
+GROUP BY 1
+HAVING COUNT(1) > 3
+ORDER BY 2 DESC
+
 https://stepik.org/lesson/297508/step/8?unit=279268
 
 БД trip
@@ -20,6 +46,7 @@ class Singleton:
 
 class DBCommitter(Singleton):
     quotes = ['«', '»', '„', '“', "'", '"']
+    primary_key_mark = "PRIMARY KEY"
 
     def __init__(self, db_name: str):
         if not hasattr(self, 'db_name'):
@@ -116,7 +143,7 @@ class DBCommitter(Singleton):
         # основная структура запроса - здесь:
         colnames_info_str = ', '.join([f'{k}'
                                        for (k,v) in colnames_data_types.items()
-                                       if 'id' not in k])
+                                       if self.primary_key_mark not in v])
         # print(data)
         insert_query = f'''INSERT INTO {tbl_name}
              ({colnames_info_str}) VALUES
