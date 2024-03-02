@@ -25,6 +25,55 @@ GROUP BY 1
 HAVING COUNT(1) > 3
 ORDER BY 2 DESC
 
+Результаты скорее всего будут, но позже)
+
+
+
+1) Без подзапроса (меньше кода):
+
+Execution finished without errors.
+
+Result: 2 строк возвращено за 3мс
+
+2) С подзапросом (больше кода):
+
+Execution finished without errors.
+
+Result: 2 строк возвращено за 2мс
+
+
+
+Заключение:
+
+Меньше кода => Больше время выполнения запроса.
+
+Больше кода => Меньше время выполнения запроса.
+
+Мораль (Почему?):
+
+При SQL-запросе с подзапросом, расположенном после ключевого слова WHERE из БД отбираются только нужные нам записи,
+отфильтрованные по ФИО сотрудника в данном случае. А при использовании HAVING (без подзапроса)
+мы работаем со всеми записями и затем только после проведения всех расчетов фильтруем их,
+и только затем уже формируем итоговую сводную таблицу. Даже при малом (N=20) количестве наблюдений (строк) в БД
+наблюдаются существенные различия (~1мс). А теперь представьте себе БД, имеющую от 100000 и
+более строк в анализируемой таблице. Поэтому лучше сразу писать "норм" код,
+ориентированный на наилучшую производительность => меньшую нагрузку на сервер.
+
+P.S. Тексты самих запросов не приложил, уж извиняйте )))
+
+По хорошему необходимо провести мини-исследование и желательно "запитонить" его
+(в принципе пойдет любой интерпретируемый язык программирования, но Пайтон под эти цели лучше всего "заточен").
+
+
+Вижу все это примерно так:
+1) автозаполнение таблицы новыми данными (просто дублями - результатам не навредит);
+2) с интервалом в 100 новых записей делать замеры скорости выполнения запросов для обоих типов ( с / без подзапроса);
+3) сделать как минимум 20-30 шт. таких замеров на каждом интервале - посчитать среднее
+(медиану + все описательные статистики) времени выполнения;
+4) сформировать сводную таблицу и построить график зависимости время выполнения (ось y)
+от размера таблицы (ось x) для обоих типов запросов;
+5) профит)))
+
 https://stepik.org/lesson/297508/step/8?unit=279268
 
 БД trip
@@ -33,6 +82,7 @@ https://stepik.org/lesson/297510/step/1?auth=registration&unit=279270
 """
 from sqlite3 import connect
 from os import getcwd as os_getcwd
+from pandas import DataFrame
 
 
 class Singleton:
@@ -59,6 +109,33 @@ class DBCommitter(Singleton):
         self.__db_name = self.db_name_check(db_name=db_name)
 
     db_name = property(get_db_name, set_db_name)
+
+    def __call__(self,
+                 query_text: str,
+                 need_commit: bool=False,
+                 excel_file_name: str='SQL_query.xlsx'):
+        db_name = self.db_name
+        conn = connect(db_name)
+        c = conn.cursor()  # заводим курсор
+        # основная структура запроса - здесь:
+        c.execute(query_text)
+        colnames = [desc[0] for desc in c.description]
+        db_response = c.fetchall()
+        if need_commit:
+            conn.commit()  # делаем коммит
+        conn.close()
+        if not len(db_response): # результат запроса - пустая таблица
+            return
+        by_col_res = []
+        for indx in range(len(db_response[0])):
+            by_col_res.append([i[indx] for i in db_response])
+        result = {}
+        for column_name in colnames:
+            result[column_name] = by_col_res.pop(0)
+        df = DataFrame(result)
+        db_name_str = db_name.replace('.', '_')
+        df.to_excel(f'{db_name_str}_'+excel_file_name, index=False)
+        return df
 
     def db_name_check(self, db_name: str, db_format: str = ".db"):
         if type(db_name) != str or not db_name.endswith(db_format.strip()):
@@ -203,3 +280,4 @@ if __name__ == '__main__':
     print("^ ^ ^")
     print("| | |")
     print("Все копии объектов класса DBCommitter по факту ссылаются на один объект!")
+    input('Для завершения скрипта нажмите Enter')
